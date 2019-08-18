@@ -7,37 +7,50 @@ enum MyDialogueAction{
 }
 
 class PlusFile extends StatefulWidget {
-  PlusFile({Key key}) : super(key: key);
-  @override
-  PlusFileState createState() => PlusFileState();
-}
+  final Post dPost;
+  final int pageCase;
+  PlusFile({this.pageCase, this.dPost});
 
+  @override
+  PlusFileState createState() => PlusFileState(pageCase: pageCase, dPost: dPost);
+}
 class PlusFileState extends State<PlusFile> {
   final _titleKey = GlobalKey<FormState>();
+  final Post dPost;
+  final int pageCase;
+  PlusFileState({this.pageCase, this.dPost});
 
-  final _titlecontroller = TextEditingController();
-  final _bodycontroller = TextEditingController();
+  final _titleController = TextEditingController();
+  final _bodyController = TextEditingController();
+
   var addPost;
+
   String _text = '';
 
   @override
   void initState() {
     super.initState();
-    _bodycontroller.addListener(() {
+    setState(() {
+      if(pageCase == 2) {
+        _titleController.text = dPost.title;
+        _bodyController.text = dPost.body;
+      }
     });
-    _titlecontroller.addListener(() {
+    _bodyController.addListener(() {
+    });
+    _titleController.addListener(() {
     });
   }
 
   void dispose() {
-    _titlecontroller.dispose();
-    _bodycontroller.dispose();
+    _titleController.dispose();
+    _bodyController.dispose();
     super.dispose();
   }
 
   void _dialogueResult(MyDialogueAction value){
     Navigator.of(context).pop();
-    addPost = Post(userId: 1, id: 1, title: _titlecontroller.text, body: _bodycontroller.text);
+    addPost = Post(userId: 1, id: 1, title: _titleController.text, body: _bodyController.text);
     Navigator.pop(context, addPost);
   }
 
@@ -60,7 +73,7 @@ class PlusFileState extends State<PlusFile> {
   Widget build(BuildContext context) {
     return Scaffold (
       appBar: AppBar(
-        title: Text('PlusFile'),
+        title: pageCase == 1 ? Text('PlusFile') : Text('FixFile'),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.save),
@@ -79,7 +92,7 @@ class PlusFileState extends State<PlusFile> {
             Text('title',style: TextStyle(fontSize: 20, color: Colors.purple),),
             TextFormField(
               decoration: InputDecoration(hintText: 'Enter title',border: OutlineInputBorder()),
-              controller: _titlecontroller,
+              controller: _titleController,
               maxLength: 150,
               validator: (titleValue) {
                 if (titleValue.isEmpty) {
@@ -92,7 +105,7 @@ class PlusFileState extends State<PlusFile> {
             TextFormField(
               decoration: InputDecoration(hintText: 'Enter body', border: OutlineInputBorder()),
               maxLength: 500,
-              controller: _bodycontroller,
+              controller: _bodyController,
               validator: (bodyValue) {
                 if (bodyValue.isEmpty) {
                   return 'Title Please enter Text';

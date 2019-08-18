@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import 'package:postme_test/Settings.dart';
 import 'package:postme_test/EditFile.dart';
-import 'package:postme_test/Change.dart';
 import 'package:postme_test/Comments.dart';
 
 
@@ -87,7 +86,7 @@ class PostPageState extends State<PostPage> {
   _openPlusFile(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PlusFile()),
+      MaterialPageRoute(builder: (context) => PlusFile(pageCase: 1)),
     );
     print(result);
     if (result != null) {
@@ -167,7 +166,7 @@ class DetailState extends State<Detail> {
           IconButton(
               icon: Icon(Icons.create),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Edit(editData: dPost)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PlusFile(pageCase: 2, dPost: dPost)));
               })
         ],
       ),
@@ -178,7 +177,7 @@ class DetailState extends State<Detail> {
             ListTile(
               leading: Column(
                 children: <Widget>[
-                  Text('User'+dPost.id.toString()),
+                  Text('User'+dPost.userId.toString()),
                 ],
               ),
               title: Text(dPost.title),
@@ -186,25 +185,6 @@ class DetailState extends State<Detail> {
             ),
            Comment()
            //여기에 다른 클래스에서 만든걸 그냥 불러오기
-           /*
-           Container (
-             width: 350,
-             height: 450,
-             child: ListView.builder(
-                 itemCount: dPost?.length ?? 0,
-                 itemBuilder: (context, int index) {
-                   return ListTile(
-                     leading: Column(
-                       children: <Widget>[
-                         Text('User'+dPost[index].userId),
-                       ],
-                     ),
-                     title: Text(dPost[index].title, style: TextStyle(fontSize: 15 ),),
-                     subtitle: Text(dPost[index].body),
-                   );
-                 }),
-           ),
-            */
           ],
         ),
       ),
