@@ -6,21 +6,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:postme_test/Settings.dart';
-import 'package:postme_test/CreateFile.dart';
+import 'package:postme_test/EditFile.dart';
+import 'package:postme_test/Change.dart';
+import 'package:postme_test/Comments.dart';
 
 
 Future<List<Post>> fetchPosts(http.Client client) async {
   final response = await client.get("https://jsonplaceholder.typicode.com/posts");
 
-  return parsePosts(response.body);
+  return compute(parsePosts, response.body);
 }
-
 List<Post> parsePosts(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<Post>((json) => Post.fromJson(json)).toList();
 }
-
 class Post {
   final int userId;
   final int id;
@@ -39,62 +39,97 @@ class Post {
   }
 }
 
+
 class PostPage extends StatefulWidget {
-  final posts;
-
-  PostPage({Key key, this.posts}) : super(key: key);
-
   @override
-  PostPageState createState() => PostPageState(MePosts: posts);
+  PostPageState createState() => PostPageState();
 }
-
 class PostPageState extends State<PostPage> {
-  List<Post> MePosts;
-
-  PostPageState({this.MePosts});
+  final List<Post> mePosts = List();
 
   void initState() {
     super.initState();
+    print('PostMePage');
     fetchPosts(http.Client()).then((list) {
       setState(() {
-        MePosts.addAll(list);
-        print(MePosts.length);
+        mePosts.addAll(list);
+        print(mePosts.length);
       });
     });
   }
 
+  _openDetail(BuildContext context, index) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Detail(post: mePosts[index],)),
+    );
+    print("after open Detail :  "+result.toString());
+    if (result != null) {
+      mePosts.removeAt(index);
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('it was deleted'),
+        duration: Duration(seconds: 5),
+        action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              setState(() {
+                mePosts.insert(index, result);
+                _scaffoldKey.currentState.hideCurrentSnackBar();
+              });
+            }),
+      ),
+      );
+    }
+    else if(result == null) {
+      print("result is null");
+    }
+}
+  _openPlusFile(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PlusFile()),
+    );
+    print(result);
+    if (result != null) {
+      mePosts.insert(0, result);
+    }
+  }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext postPageContext) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Post Me'),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.library_add),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PlusFile())
-                );
+                _openPlusFile(postPageContext);
               }),
           IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage())
+                Navigator.push(postPageContext, MaterialPageRoute(builder: (context) => SettingPage())
                 );
-              })
+              }),
         ],
       ),
       body: ListView.builder(
-          itemCount: MePosts.length,
-          itemBuilder: (context, index) {
+          itemCount: mePosts?.length ?? 0,
+          itemBuilder: (context, int index) {
             return ListTile(
-              title: Text(''),
+              leading: Column(
+                children: <Widget>[
+                  Text('User'+mePosts[index].userId.toString()),
+                ],
+              ),
+              title: Text(mePosts[index].title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+              subtitle: Text(mePosts[index].body),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserInfo(),
-                    )
-                );
+                _openDetail(context, index);
               },
             );
           }),
@@ -102,22 +137,104 @@ class PostPageState extends State<PostPage> {
   }
 }
 
-class UserInfo extends StatelessWidget {
-  final List<Post> todo;
+class Detail extends StatefulWidget {
+  final Post post;
 
-  UserInfo({Key key, this.todo}) : super(key: key);
+  Detail({this.post});
+
+  @override
+  DetailState createState() => DetailState(dPost: post);
+}
+class DetailState extends State<Detail> {
+  final Post dPost;
+
+  DetailState({this.dPost});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold (
       appBar: AppBar(
-        title: Center(child: Text('UserInfo', textAlign: TextAlign.center)),
+        title: Center(
+            child: Text('Detail', textAlign: TextAlign.center)),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                if (_detailShowAlert != null) {
+                  _detailShowAlert(context);
+                }
+              }),
+          IconButton(
+              icon: Icon(Icons.create),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Edit(editData: dPost)));
+              })
+        ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Text('1234'),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            ListTile(
+              leading: Column(
+                children: <Widget>[
+                  Text('User'+dPost.id.toString()),
+                ],
+              ),
+              title: Text(dPost.title),
+              subtitle: Text(dPost.body),
+            ),
+           Comment()
+           //여기에 다른 클래스에서 만든걸 그냥 불러오기
+           /*
+           Container (
+             width: 350,
+             height: 450,
+             child: ListView.builder(
+                 itemCount: dPost?.length ?? 0,
+                 itemBuilder: (context, int index) {
+                   return ListTile(
+                     leading: Column(
+                       children: <Widget>[
+                         Text('User'+dPost[index].userId),
+                       ],
+                     ),
+                     title: Text(dPost[index].title, style: TextStyle(fontSize: 15 ),),
+                     subtitle: Text(dPost[index].body),
+                   );
+                 }),
+           ),
+            */
+          ],
+        ),
       ),
     );
   }
-}
 
+  var tempData;
+  void _detailDialog(DialogAction value, BuildContext scaffoldContext) {
+    setState(() {
+      tempData = dPost;
+    });
+    Navigator.of(context).pop();
+    Navigator.pop(scaffoldContext, tempData);
+  }
+  void _detailShowAlert(BuildContext scaffoldContext) {
+    showDialog(
+        context: context,
+        builder: (_) =>  AlertDialog(
+          title:  Text('Alert'),
+          content:  Text('Are you sure to Delete this post?',
+            style:  TextStyle(fontSize: 19.0),),
+          actions: <Widget>[
+            FlatButton(onPressed: () {Navigator.of(context).pop();}, child: Text('Cancel')),
+            FlatButton(onPressed: () {_detailDialog(DialogAction.yes, scaffoldContext);}, child: Text('Confirm')),
+          ],
+        )
+    );
+  }
+}
+enum DialogAction {
+  yes,
+  no,
+}

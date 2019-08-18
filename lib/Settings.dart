@@ -20,13 +20,3 @@ class SettingPage extends StatelessWidget {
     );
   }
 }
-
-
-
-//  final todos = List<Todo>.generate(
-//    60,
-//        (p) => Todo(
-//      'User $p',
-//      'Hello User $p',
-//    ),
-//  );
