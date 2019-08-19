@@ -62,12 +62,12 @@ class CommentState extends State<Comment> {
         width: 350,
         height: 450,
         child: ListView.builder(
-            itemCount: comPost?.length ?? 0,
+            itemCount: comPost.length,
             itemBuilder: (context, int index) {
               return ListTile(
                 leading: Column(
                   children: <Widget>[
-                    Text('User'+comPost[index].postId.toString()),
+                    Text('User'+comPost[index].id.toString()),
                   ],
                 ),
                 title: Text(comPost[index].name, style: TextStyle(fontSize: 15 ),),

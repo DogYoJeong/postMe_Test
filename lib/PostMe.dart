@@ -44,10 +44,11 @@ class PostPage extends StatefulWidget {
   PostPageState createState() => PostPageState();
 }
 class PostPageState extends State<PostPage> {
-  final List<Post> mePosts = List();
+  List<Post> mePosts; //List()로 초기화!
 
   void initState() {
     super.initState();
+    mePosts = List();
     print('PostMePage');
     fetchPosts(http.Client()).then((list) {
       setState(() {
@@ -62,7 +63,7 @@ class PostPageState extends State<PostPage> {
       context,
       MaterialPageRoute(builder: (context) => Detail(post: mePosts[index],)),
     );
-    print("after open Detail :  "+result.toString());
+    print("after open Detail : "+result.toString());
     if (result != null) {
       mePosts.removeAt(index);
       _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -90,7 +91,7 @@ class PostPageState extends State<PostPage> {
     );
     print(result);
     if (result != null) {
-      mePosts.insert(0, result);
+      mePosts.insert(0, result) ;
     }
   }
 
@@ -117,7 +118,7 @@ class PostPageState extends State<PostPage> {
         ],
       ),
       body: ListView.builder(
-          itemCount: mePosts?.length ?? 0,
+          itemCount: mePosts.length,//mePosts?.length ?? 0, 이것을 안써도 되는 이유 : 47번 줄에 {final List<Post> mePosts = List();}이걸로 이미 초기화 했으므로 null이 나올 수 없는데 굳이 null를 테스트 할 필요 없어서
           itemBuilder: (context, int index) {
             return ListTile(
               leading: Column(
@@ -191,21 +192,17 @@ class DetailState extends State<Detail> {
     );
   }
 
-  var tempData;
+
   void _detailDialog(DialogAction value, BuildContext scaffoldContext) {
-    setState(() {
-      tempData = dPost;
-    });
     Navigator.of(context).pop();
-    Navigator.pop(scaffoldContext, tempData);
+    Navigator.pop(scaffoldContext, dPost);
   }
   void _detailShowAlert(BuildContext scaffoldContext) {
     showDialog(
         context: context,
         builder: (_) =>  AlertDialog(
           title:  Text('Alert'),
-          content:  Text('Are you sure to Delete this post?',
-            style:  TextStyle(fontSize: 19.0),),
+          content:  Text('Are you sure to Delete this post?', style:  TextStyle(fontSize: 19.0),),
           actions: <Widget>[
             FlatButton(onPressed: () {Navigator.of(context).pop();}, child: Text('Cancel')),
             FlatButton(onPressed: () {_detailDialog(DialogAction.yes, scaffoldContext);}, child: Text('Confirm')),

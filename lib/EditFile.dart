@@ -15,9 +15,11 @@ class PlusFile extends StatefulWidget {
   PlusFileState createState() => PlusFileState(pageCase: pageCase, dPost: dPost);
 }
 class PlusFileState extends State<PlusFile> {
+  //TODO 생성,삭제 완료 , 숙제 : 수정, DropDownButton, Settings 만들기
   final _titleKey = GlobalKey<FormState>();
   final Post dPost;
   final int pageCase;
+
   PlusFileState({this.pageCase, this.dPost});
 
   final _titleController = TextEditingController();
@@ -37,6 +39,7 @@ class PlusFileState extends State<PlusFile> {
       }
     });
     _bodyController.addListener(() {
+
     });
     _titleController.addListener(() {
     });
