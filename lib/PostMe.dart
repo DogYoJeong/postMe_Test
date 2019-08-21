@@ -91,7 +91,17 @@ class PostPageState extends State<PostPage> {
     );
     print(result);
     if (result != null) {
-      mePosts.insert(0, result) ;
+      mePosts.insert(0, result);
+    }
+  }
+
+  _openSettings(BuildContext context) async {
+    final ch = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SettingPage()),
+    );
+    if (ch != null) {
+      mePosts.insert(0, ch);
     }
   }
 

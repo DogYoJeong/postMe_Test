@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:postme_test/PostMe.dart';
-import 'package:postme_test/Settings.dart';
+//import 'package:postme_test/Settings.dart'; //몇번 유저인지 정보 보내기
 
-
-void main () { //얘는 아직 안썼음
+//TODO 생성,삭제,DropDonwButton(틀만), Settings(틀만) 완료 , 숙제 : items,sub 합치기 수정 데이터 setState 해주기
+void main () {
   runApp(MaterialApp(
       title: 'Post Me!',
       theme: ThemeData(
@@ -36,40 +36,40 @@ class FirstPage extends StatefulWidget {
 }
 
 class FirstPageState extends State<FirstPage> {
+  var _dropItem = ['???','User1','User2','User3','User4','User5','User6','User7','User8','User9','User10'];
   @override
   Widget build(BuildContext context) {
     return Scaffold (
       backgroundColor: Colors.purple,
         body: Center(
-          child: Row(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Your', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-              DropdownButton(
-                items: [
-                  DropdownMenuItem(
-                    value: "0",
-                    child: Text(
-                      "???",
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: '1',
-                    child: Text(
-                      'User1',
-                    ),
-                  ),
+              Text('Post ME!', style: TextStyle(fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text('You are', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),),
+                  DropdownButton<String>(
+                    items: _dropItem.map((String dropDownStringItem) {
+                      return DropdownMenuItem<String>(
+                        value: dropDownStringItem,
+                        child: Text(dropDownStringItem),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        //_value = value;
+                        Navigator.pushAndRemoveUntil(
+                            context, MaterialPageRoute(builder: (context) => PostPage()), (route) => false);
+                      });
+                    },
+                    //value: _value,
+                  )
                 ],
-                onChanged: (value) {
-                  setState(() {
-                    //_value = value;
-                    Navigator.pushAndRemoveUntil(
-                        context, MaterialPageRoute(builder: (context) => PostPage()), (route) => false);
-                  });
-                },
-                //value: _value,
-              )
+              ),
             ],
-          ),
+          )
           /*RaisedButton(
               child: Text('PostMe Page!'),
               onPressed: () {
