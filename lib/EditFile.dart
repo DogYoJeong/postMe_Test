@@ -21,8 +21,8 @@ class PlusFileState extends State<PlusFile> {
 
   PlusFileState({this.pageCase, this.dPost});
 
-  final _titleController = TextEditingController();
-  final _bodyController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _bodyController = TextEditingController();
   var addPost;
   String _text = '';
 
@@ -30,15 +30,14 @@ class PlusFileState extends State<PlusFile> {
   void initState() {
     super.initState();
     setState(() {
-      if(pageCase == 2) {
+      if(pageCase == 1) {
+        _titleController.text = '';
+        _bodyController.text = '';
+      }
+      else {
         _titleController.text = dPost.title;
         _bodyController.text = dPost.body;
       }
-      _bodyController.addListener(() {
-
-      });
-      _titleController.addListener(() {
-      });
     });
   }
 
@@ -52,6 +51,16 @@ class PlusFileState extends State<PlusFile> {
     Navigator.of(context).pop();
     addPost = Post(userId: 1, id: 1, title: _titleController.text, body: _bodyController.text);
     Navigator.pop(context, addPost);
+    if(_titleController.text != "" && _bodyController.text != "") {
+      switch (pageCase) {
+        case 1:
+          Navigator.pop(addPost);
+          break;
+        case 2:
+          Navigator.pop(addPost);
+          break;
+      }
+    }
   }
 
   void _showAlert(String value){
@@ -108,7 +117,7 @@ class PlusFileState extends State<PlusFile> {
               controller: _bodyController,
               validator: (bodyValue) {
                 if (bodyValue.isEmpty) {
-                  return 'Title Please enter Text';
+                  return 'Body Please enter Text';
                 }
                 return null;
               },

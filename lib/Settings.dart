@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:postme_test/main.dart';
 
 /*class SettingPage extends StatefulWidget {
 
@@ -8,9 +7,22 @@ import 'package:flutter/material.dart';
   SettingPageState createState() => SettingPageState();
 }*/
 
-class SettingPage extends StatelessWidget {
+class Sub {
+  var title ;
+  var subtitle;
 
-  final List<String> items = <String>['You are (User n)','Developer','Version',];
+  Sub({this.title, this.subtitle});
+
+}
+
+class SettingPage extends StatelessWidget {
+  List<Sub> items = List();
+
+  SettingPage(){
+    items.add(Sub(title: "You are", subtitle: "Quit"));
+    items.add(Sub(title: "Developer", subtitle: "db"));
+    items.add(Sub(title: "Version", subtitle: "1.0.0"));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +37,8 @@ class SettingPage extends StatelessWidget {
             leading: Column(
               children: <Widget>[],
             ),
-            title: Text(items[index], style: TextStyle(fontWeight: FontWeight.bold),),
-            subtitle: Text(items),
+            title: Text(items[index].title, style: TextStyle(fontWeight: FontWeight.bold),),
+            subtitle: Text(items[index].subtitle),
             onTap: () {
               if(index == 0) {
                 _settingShowAlert(context);
@@ -38,26 +50,6 @@ class SettingPage extends StatelessWidget {
       )
     );
   }
-
-  //ListTile.divideTiles(
-  //            context: context,
-  //            tiles: [
-  //              ListTile(
-  //                leading: Column(
-  //                  children: <Widget>[
-  //                    Text(''),
-  //                  ],
-  //                ),
-  //                title: Text('You are', style: TextStyle(fontWeight: FontWeight.bold,),),
-  //                subtitle: Text('Quit'),
-  //                onTap: () {
-  //                  _settingShowAlert(context);
-  //                },
-  //              ),
-  //              Information(),
-  //            ]
-  //        ).toList(),
-
   void _settingShowAlert(BuildContext settingContext) {
     showDialog(
         context: settingContext,
@@ -72,43 +64,6 @@ class SettingPage extends StatelessWidget {
     );
   }
 }
-
-class Information extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          leading: Column(
-            children: <Widget>[
-              Text(''),
-            ],
-          ),
-          title: Text('Information', style: TextStyle(fontSize: 12, color: Colors.purple,fontWeight: FontWeight.bold,)),
-        ),
-        ListTile(
-          leading: Column(
-            children: <Widget>[
-              Text(''),
-            ],
-          ),
-          title: Text('Developer', style: TextStyle(fontWeight: FontWeight.bold,)),
-          subtitle: Text('db'),
-        ),
-        ListTile(
-          leading: Column(
-            children: <Widget>[
-              Text(''),
-            ],
-          ),
-          title: Text('Version', style: TextStyle(fontWeight: FontWeight.bold),),
-          subtitle: Text('1.0.0'),
-        ),
-      ],
-    );
-  }
-}
-
 enum SettingDialogAction{
   yes,
   no,

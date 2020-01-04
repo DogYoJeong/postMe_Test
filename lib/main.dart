@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:postme_test/PostMe.dart';
 //import 'package:postme_test/Settings.dart'; //몇번 유저인지 정보 보내기
 
-//TODO 생성,삭제,DropDonwButton(틀만), Settings(틀만) 완료 , 숙제 : items,sub 합치기 수정 데이터 setState 해주기
+//TODO 생성,삭제,DropDonwButton(틀만), Settings(틀만) 완료 , 숙제 : 수정하기 중요!
 void main () {
   runApp(MaterialApp(
       title: 'Post Me!',

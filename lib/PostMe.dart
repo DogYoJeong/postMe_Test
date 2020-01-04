@@ -95,15 +95,7 @@ class PostPageState extends State<PostPage> {
     }
   }
 
-  _openSettings(BuildContext context) async {
-    final ch = await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SettingPage()),
-    );
-    if (ch != null) {
-      mePosts.insert(0, ch);
-    }
-  }
+
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
